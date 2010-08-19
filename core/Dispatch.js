@@ -1,0 +1,2 @@
+var Dispatch = Class({
+});
