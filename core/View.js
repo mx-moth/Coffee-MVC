@@ -1,5 +1,5 @@
 var View = new Class({
-	Extends: CoreObject,
+	Extends: app.getClass('CoreObject', 'CoreObject'),
 	controller: null,
 	action: null,
 	layout: null,

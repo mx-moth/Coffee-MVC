@@ -12,7 +12,7 @@
  */
 $extend(exports, {Inflector: new Class({
 
-	Extends: CoreObject,
+	Extends: app.getClass('CoreObject', 'CoreObject'),
 
 	/**
 	 * Plural inflector rules

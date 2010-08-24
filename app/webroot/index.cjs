@@ -14,6 +14,7 @@ paths.config = new Directory(paths.app + '/config');
 paths.root = paths.app.getParent();
 paths.core = new Directory(paths.root + '/core');
 
+
 var scriptUrl = request.headers()['SCRIPT_URL'];
 var url = request.get.url || "";
 
@@ -23,13 +24,28 @@ if (scriptUrl.substring(scriptUrl - url.length) == url) {
 	paths.base = '';
 }
 
-// TODO Work out how to export this properly
-// Doing an $extend(exports, {paths: paths}); does not work, as it 
-// wont be avaliable in the next include
+exports.paths = paths;
+// TODO Fix this. The above should be enough, but it isnt
 global.paths = paths;
 
 try {
 	include(paths.core + '/loader');
+
+	app = new App();
+	exports.app = app;
+
+	inflector = app.getInstance('Inflector', 'AppObject');
+	exports.inflector = inflector;
+
+	router = app.getInstance('Router', 'AppObject');
+	exports.router = router;
+
+	router.loadRules();
+
+	var action = router.getAction(request.get.url);
+	var controller = new (app.getClass(action.controller, 'Controller'))();
+	controller.parameters = action.parameters;
+	response.write(controller.handle(action.action, action.arguments));
 } catch (err) {
 	response.write('<pre>' + err + "<br />" + HTML.dump(err) + '</pre>');
 }

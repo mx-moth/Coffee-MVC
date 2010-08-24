@@ -1,6 +1,6 @@
 var Controller = new Class({
 
-	Extends: CoreObject,
+	Extends: app.getClass('CoreObject', 'CoreObject'),
 
 	$type: 'Controller',
 	$name: null,
@@ -12,8 +12,7 @@ var Controller = new Class({
 
 	variables: {},
 
-	initialize: function() {
-	},
+	initialize: function() {},
 
 	handle: function(action, args) {
 		if (this[action] && $type(this[action]) == 'function') {

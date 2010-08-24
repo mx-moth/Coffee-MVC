@@ -1,9 +1,8 @@
 var App = new Class({
 
-	paths: {
-	},
-	classes: {
-	},
+	paths: null,
+	classes: null,
+	instances: null,
 
 	router: null,
 
@@ -11,6 +10,10 @@ var App = new Class({
 	 * Creates a new App, loading settings and setting paths
 	 */
 	initialize: function() {
+
+		this.paths = {};
+		this.classes = {};
+		this.instances = {};
 
 		var pathsMerged = {};
 
@@ -26,8 +29,6 @@ var App = new Class({
 			});
 		});
 		this.paths = pathsMerged;
-
-		this.setRouter(new (this.getClass('Router', 'CoreObject')));
 	},
 
 	/**
@@ -35,16 +36,6 @@ var App = new Class({
 	 */
 	getPaths: function(type) {
 		return this.paths[type] || [];
-	},
-
-	/**
-	 * Set the router used by this App
-	 *
-	 * Paramaters
-	 * 	router - The router to use for this App
-	 */
-	setRouter: function(router) {
-		this.router = router;
 	},
 
 	/**
@@ -151,7 +142,32 @@ var App = new Class({
 				type: type
 			});
 		}
-	}
+	},
+
+	/**
+	 * Function: getInstance
+	 * Get a 'global' instance of a class. For this to work, the class needs
+	 * an empty constructor
+	 *
+	 * Paramaters:
+	 * 	name - The name of the class.
+	 * 	type - The type of the class. Eg. Controller, Model, Behaviour...
+	 *
+	 * Returns:
+	 *  An instance of the class asked for
+	 *
+	 * Throws: classNotFound
+	 */
+	 getInstance: function(name, type) {
+		if (!this.instances[type]) {
+			this.instances[type] = {};
+		}
+		if (!this.instances[type][name]) {
+			this.instances[type][name] = new (this.getClass(name, type))();
+		}
+
+		return this.instances[type][name];
+	 },
 });
 
 Class.Mutators.CoreObject = function() {

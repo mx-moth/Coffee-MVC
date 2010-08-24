@@ -1,5 +1,5 @@
 var Router = new Class({
-	Extends: CoreObject,
+	Extends: app.getClass('CoreObject', 'CoreObject'),
 
 	moustache: /\{([a-zA-Z0-9._-]+)\}/g,
 
@@ -17,6 +17,10 @@ var Router = new Class({
 
 	initialize: function() {
 		this.connections = [];
+	},
+
+	loadRules: function() {
+		require(paths.config + '/routes.js');
 	},
 
 	/**
@@ -88,8 +92,7 @@ var Router = new Class({
 			}
 		});
 
-		//action.controller = app.getClass(action.controller, 'Controller');
-
+		action.controller = inflector.classify(action.controller);
 		return action;
 	},
 
@@ -98,9 +101,9 @@ var Router = new Class({
 
 		var controller = action.controller;
 		if (controller.$name) {
-			url.push(controller.$name);
+			url.push(inflector.tableize(controller.$name));
 		} else {
-			url.push(controller);
+			url.push(inflector.tableize(controller));
 		}
 
 		if (action.action) {
@@ -118,6 +121,13 @@ var Router = new Class({
 	},
 
 	connect: function(url, action, patterns) {
+		if ($type(url) == 'array' && action == null && patterns == null) {
+			url.each(function(arr) {
+				this.connect.apply(this, arr);
+			}, this);
+			return;
+		}
+
 		$extend(patterns || {}, this.patterns);
 		var moustache = this.moustache;
 		var namedMoustaches = {};
@@ -147,11 +157,6 @@ var Router = new Class({
 			action:	actionRegex
 		});
 
-		/*
-		response.write('<strong>URL</strong>: ' + HTML.dump(url) + '<br />');
-		response.write(HTML.dump(urlRegex) + '<br />');
-		response.write(HTML.dump(namedMoustaches) + '<br />');
-		*/
 
 		// Construct giant regex
 		// ???
