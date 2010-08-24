@@ -1,5 +1,4 @@
 var App = new Class({
-	Extends: CoreObject,
 
 	paths: {
 	},
@@ -15,8 +14,9 @@ var App = new Class({
 
 		var pathsMerged = {};
 
-		(['core/config/paths.js', 'app/config/paths.js']).each(function(configPath) {
-			data = require(paths.root + '/' + configPath);
+		// Include the config paths
+		([paths.core + '/config/paths.js', paths.config + '/paths.js']).each(function(configPath) {
+			data = require(configPath);
 			$H(data).each(function(paths, type) {
 				if (!pathsMerged[type]) {
 					pathsMerged[type] = [];
@@ -62,8 +62,8 @@ var App = new Class({
 		this.getPaths(type).some(function(path) {
 			path = path + '/' + name;
 			return this.getPaths('extensions').some(function(extension) {
-				if (new File(paths.root + '/' + path + extension).exists()) {
-					file = paths.root + '/' + path + extension;
+				if (new File(path + extension).exists()) {
+					file = path + extension;
 					return true;
 				}
 				return false;

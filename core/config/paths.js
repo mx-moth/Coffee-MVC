@@ -1,10 +1,10 @@
 $extend(exports, {
 	extensions: ['.js'],
-	View: ['core/views'],
-	Layout: ['core/views/layouts'],
-	Controller: ['core/controllers'],
-	Model: ['core/models'],
+	View: [paths.core + '/views'],
+	Layout: [paths.core + '/views/layouts'],
+	Controller: [paths.core + '/controllers'],
+	Model: [paths.core + '/models'],
 
-	CoreObject: ['core'],
-	AppObject: ['core'],
+	CoreObject: [paths.core],
+	AppObject: [paths.core],
 });

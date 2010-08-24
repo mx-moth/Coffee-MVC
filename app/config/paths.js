@@ -1,7 +1,7 @@
 $extend(exports, {
-	View: ['app/views'],
-	Layout: ['app/views/layouts'],
-	Controller: ['app/controllers'],
-	Model: ['app/models'],
-	AppObject: ['app'],
+	View: [paths.app + '/views'],
+	Layout: [paths.app + '/views/layouts'],
+	Controller: [paths.app + '/controllers'],
+	Model: [paths.app + '/models'],
+	AppObject: [paths.app],
 });
