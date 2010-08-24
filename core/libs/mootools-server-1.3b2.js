@@ -2455,6 +2455,7 @@ if (!this.Slick) this.Slick = Slick;
 
 $extend(exports, {
 	Native: Native,
+	Object: Object,
 	Function: Function,
 	Array: Array,
 	Number: Number,
@@ -2463,5 +2464,6 @@ $extend(exports, {
 	Options: Options,
 	$type: $type,
 	$extent: $extend,
-	$merge: $merge
+	$merge: $merge,
+	$pick: $pick,
 });

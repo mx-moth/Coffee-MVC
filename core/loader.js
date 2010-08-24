@@ -3,6 +3,7 @@
  */
 
 include('./libs/mootools-server-1.3b2');
+include('./libs/mootools-extra');
 include('./libs/dom');
 
 var CoreObject = include('./CoreObject');
