@@ -1,12 +1,15 @@
+var Template = require('template').Template;
+
 var View = new Class({
 	Extends: app.getClass('CoreObject', 'CoreObject'),
 	controller: null,
 	action: null,
-	layout: null,
 
 	variables: {},
 
 	options: {},
+
+	extension: '.html',
 
 	initialize: function(controller, options) {
 		this.controller = controller;
@@ -23,17 +26,24 @@ var View = new Class({
 	},
 
 	render: function(action, layout) {
+
 		this.action = action;
 
 		// Render everything
 		var name = this.controller.getName() + '/' + this.action;
-		var file = app.findFile(name, 'View');
+		var file = app.findFile(name, 'View', this.extension);
 
 		if (file) {
-			return include(file).content;
+			var template = new Template({suffix: this.extension.substring(1)});
+			var content = template.process(file, this.variables);
+			if (layout) {
+				this.set('contentForLayout', content);
+				content = template.process(app.findFile(layout, 'Layout', this.extension), this.variables);
+			}
+			return content;
 		} else {
 			this.throw_error('viewNotFound', {
-				description: 'View ' + name + ' could not be found',
+				description: 'View ' + name + this.extension + ' could not be found',
 				controller: this.controller.getName(),
 				action: this.action
 			});

@@ -17,25 +17,18 @@ var Controller = new Class({
 	handle: function(action, args) {
 		if (this[action] && $type(this[action]) == 'function') {
 
+			var View = (app.getClass('View', 'CoreObject'));
 			
 			// Set up some variables
-			this.view = new (app.getClass('View', 'CoreObject'))(this);
+			this.view = new View(this);
+			this.view.set(this.variables);
 			this.action = action;
 
 			this[action].apply(this, $splat(args));
 
 			if (this.autoRender) {
-				global.vars = this.variables;
 				var rendered = this.view.render(this.action, this.layout);
-
-				if (this.layout) {
-					this.set('content_for_layout', rendered);
-					global.vars = this.variables;
-					layout = include(app.findFile(this.layout, 'Layout'));
-					return layout.document.toString();
-				} else {
-					return rendered.element.toString();
-				}
+				return rendered;
 			}
 		}
 	},

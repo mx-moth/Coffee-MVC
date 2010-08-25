@@ -48,13 +48,14 @@ var App = new Class({
 	 *
 	 * Returns: The path of the file, or null if it can not be found.
 	 */
-	findFile: function(name, type) {
+	findFile: function(name, type, extension) {
 		var file = null;
+		extension = Array.from($pick(extension, this.paths.extensions));
 		this.getPaths(type).some(function(path) {
 			path = path + '/' + name;
-			return this.getPaths('extensions').some(function(extension) {
+			return extension.some(function(extension) {
 				if (new File(path + extension).exists()) {
-					file = path + extension;
+					file = path;
 					return true;
 				}
 				return false;
@@ -111,10 +112,10 @@ var App = new Class({
 		var c = null;
 		if (file) {
 			c = require(file)[name];
-			c.implement('$name', name);
-			c['$name'] = name;
 
 			if (c) {
+				c.implement('$name', name);
+				c['$name'] = name;
 				this.addClass(name, type, c);
 			} else {
 				throw new (new Class({
