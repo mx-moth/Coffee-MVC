@@ -3,5 +3,5 @@ DirectoryIndex index.sjs
 	RewriteEngine On
 	RewriteCond %{REQUEST_FILENAME} !-d
 	RewriteCond %{REQUEST_FILENAME} !-f
-	RewriteRule ^/?(.*)$ index.cjs?url=$1 [QSA,L]
+	RewriteRule ^/?(.*)$ index.sjs?url=$1 [QSA,L]
 </IfModule>
