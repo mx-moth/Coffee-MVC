@@ -21,14 +21,16 @@ var Controller = new Class({
 			
 			// Set up some variables
 			this.view = new View(this);
-			this.view.set(this.variables);
 			this.action = action;
 
-			this[action].apply(this, $splat(args));
+			var returned = this[action].apply(this, $splat(args));
 
 			if (this.autoRender) {
+				this.view.set(this.variables);
 				var rendered = this.view.render(this.action, this.layout);
 				return rendered;
+			} else {
+				return returned;
 			}
 		}
 	},
