@@ -622,19 +622,7 @@ Element.implement({
 	},
 
 	toString: function() {
-		var doc = new Document();
-		var parent = this.getParent();
-		var next = this.nextSibling;
-		var string = null;
-
-		doc.appendChild(this);
-		string = doc.toString();
-
-		if (parent) {
-			(next || parent).grab(this, next ? 'before' : 'bottom');
-		}
-
-		return string;
+		return new DOM.XMLSerializer().serializeToString(this);
 	}
 
 });
