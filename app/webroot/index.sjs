@@ -29,22 +29,22 @@ exports.paths = paths;
 global.paths = paths;
 
 try {
+	// Include the loader
 	include(paths.core + '/loader');
 
+	// Make an app and a router
 	app = new App();
 	exports.app = app;
 
-	inflector = app.getInstance('Inflector', 'AppObject');
-	exports.inflector = inflector;
-
 	router = app.getInstance('Router', 'AppObject');
-	exports.router = router;
-
 	router.loadRules();
 
+	// Get the action to load
 	var action = router.getAction(request.get.url);
-	var controller = new (app.getClass(action.controller, 'Controller'))();
-	controller.parameters = action.parameters;
+
+	// Load the controller and make the request
+	var Controller = app.getClass(action.controller, 'Controller');
+	var controller = new Controller({parameters: action.parameters});
 	response.write(controller.handle(action.action, action.arguments));
 } catch (err) {
 	response.write('<pre>' + err + "<br />" + HTML.dump(err) + '</pre>');

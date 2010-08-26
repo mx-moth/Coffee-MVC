@@ -5,14 +5,16 @@ var Controller = new Class({
 	$type: 'Controller',
 	$name: null,
 
-	layout: 'default',
-	action: null,
+	$layout: 'default',
+	$action: null,
 
 	autoRender: true,
 
 	variables: {},
 
-	initialize: function() {},
+	initialize: function(options) {
+		this.parameters = options.parameters || new Hash();
+	},
 
 	handle: function(action, args) {
 		if (this[action] && $type(this[action]) == 'function') {
@@ -20,14 +22,14 @@ var Controller = new Class({
 			var View = (app.getClass('View', 'CoreObject'));
 			
 			// Set up some variables
-			this.view = new View(this);
-			this.action = action;
+			view = new View(this);
+			this.$action = action;
 
 			var returned = this[action].apply(this, $splat(args));
 
 			if (this.autoRender) {
-				this.view.set(this.variables);
-				var rendered = this.view.render(this.action, this.layout);
+				view.set(this.variables);
+				var rendered = view.render(this.$action, this.$layout);
 				return rendered;
 			} else {
 				return returned;
@@ -50,6 +52,7 @@ var Controller = new Class({
 				this.set(name, value);
 			}, this);
 		}
+
 	},
 
 	getName: function() {
