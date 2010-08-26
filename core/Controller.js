@@ -32,6 +32,12 @@ var Controller = new Class({
 			} else {
 				return returned;
 			}
+		} else {
+			this.throw_error('actionNotFound', {
+				description: 'The action ' + action + ' is not defined in controller ' + this.$name,
+				action: action,
+				controller: this.$name
+			});
 		}
 	},
 	

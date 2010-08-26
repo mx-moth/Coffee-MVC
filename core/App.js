@@ -118,27 +118,16 @@ var App = new Class({
 				c['$name'] = name;
 				this.addClass(name, type, c);
 			} else {
-				throw new (new Class({
+				this.throw_error("classNotFound", {
 					description: type + ' ' + name + ' in file ' + file + ' did not export ' + name,
 					name: name,
 					type: type,
-					file: file,
-					toString: function() {
-						return this.description;
-					}
-				}))();
+					file: file
+				});
 			}
 		} else {
-			throw new (new Class({
+			this.throw_error("classNotFound", {
 				description: 'Could not find ' + type + ' ' + name,
-				name: name,
-				type: type,
-				toString: function() {
-					return this.description;
-				}
-			}))();
-			this.throw_error('classNotFound', {
-				description: type + ' ' + name + ' could not be found',
 				name: name,
 				type: type
 			});

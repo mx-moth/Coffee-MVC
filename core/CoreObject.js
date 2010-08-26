@@ -1,10 +1,21 @@
+Error.implement({
+	options: {
+		description: null,
+	},
+
+	setOptions: function(options) {
+		this.options = options || {};
+	},
+
+	toString: function() {
+		return this.options.description || this.message;
+	}
+});
 var CoreObject = new Class({
 	throw_error: function(error, data) {
-		data = data || {};
-		data.toString = function() {
-			return data.description || error;
-		};
-		throw data;
+		err = new Error(error);
+		err.setOptions(data);
+		throw err;
 	}
 });
 
