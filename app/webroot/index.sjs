@@ -18,8 +18,8 @@ paths.core = new Directory(paths.root + '/core');
 var scriptUrl = request.headers()['SCRIPT_URL'];
 var url = request.get.url || "";
 
-if (scriptUrl.substring(scriptUrl - url.length) == url) {
-	paths.base = scriptUrl(0, scriptUrl.length - url.length);
+if (scriptUrl.substring(scriptUrl.length - url.length) == url) {
+	paths.base = scriptUrl.substring(0, scriptUrl.length - url.length);
 } else {
 	paths.base = '';
 }
@@ -29,11 +29,12 @@ exports.paths = paths;
 global.paths = paths;
 
 try {
+
 	// Include the loader
 	include(paths.core + '/loader');
 
 	// Make an app and a router
-	app = new App();
+	app = new App(paths);
 	exports.app = app;
 
 	router = app.getInstance('Router', 'AppObject');
