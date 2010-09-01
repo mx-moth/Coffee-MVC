@@ -22,7 +22,7 @@ var Controller = new Class({
 		this.parameters = options.parameters || new Hash();
 		this.$autoRender = Array.pick([options.autoRender, this.$autoRender]);
 		this.$variables = new Hash();
-		this.$layout = null;
+		this.$layout = 'default';
 	},
 
 	handle: function(action, args) {
