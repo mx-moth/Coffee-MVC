@@ -2463,7 +2463,7 @@ $extend(exports, {
 	Events: Events,
 	Options: Options,
 	$type: $type,
-	$extent: $extend,
+	$extend: $extend,
 	$merge: $merge,
 	$pick: $pick,
 });
