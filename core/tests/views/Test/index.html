@@ -1,0 +1,26 @@
+<h2>Tests</h2>
+$(
+	$H(data.tests).map(function(state, name) {
+	var progress = new Element('div', {'class': 'test-progress ' + (state.errors.length == 0 ? 'pass' : 'fail'), styles: {width: '100px', border: '1px solid black'}});
+		progress.grab(new Element('div', {'class': 'test-progress-bar', styles: {
+			width: ((state.count - state.errors.length) / state.count * 100) + '%',
+			height: '1em',
+			backgroundColor: 'red',
+		}}));
+		var failed;
+		if (state.errors.length == 0) {
+		failed = new Element('p', {text: "All tests passed!"});
+		} else {
+			failed = new Element('ul').adopt(state.errors.map(function(error) {
+				return new Element('li').adopt([new Element('strong', {text: (error.message || "") + ': '}), new Element('pre').adopt([
+					new Element('span', {styles: {color: 'green'}, text: JSON.stringify(error.expected, null, ' ')}),
+					' != ',
+					new Element('span', {styles: {color: 'red'}, text: JSON.stringify(error.test, null, ' ')})
+				])]);
+			}));
+		}
+
+
+		return new Element('h3', {text: name}) + progress + failed;
+	}).getValues().join('');
+)
