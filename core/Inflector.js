@@ -355,9 +355,9 @@ $extend(exports, {Inflector: new Class({
 			this._plural.cacheIrregular = '(?:' + $H(this._plural.merged.irregular).getKeys().join('|') + ')';
 		}
 
-		regs = new RegExp('(.*)\\b(' + this._plural.cacheIrregular + ')$', 'i').exec(word);
+		regs = new RegExp('^(.*[\\W_]|)(' + this._plural.cacheIrregular + ')$', 'i').exec(word);
 		if (regs !== null) {
-			this._pluralized[word] = regs[1] + word.substring(0, 1) + this._plural.merged.irregular[regs[2].toLowerCase()].substring(1);
+			this._pluralized[word] = regs[1] + this._plural.merged.irregular[regs[2].toLowerCase()];
 			return this._pluralized[word];
 		}
 
@@ -411,9 +411,9 @@ $extend(exports, {Inflector: new Class({
 			this._singular.cacheIrregular = '(?:' + $H(this._singular.merged.irregular).getKeys().join('|') + ')';
 		}
 
-		regs = new RegExp('(.*)\\b(' + this._singular.cacheIrregular + ')$', 'i').exec(word);
+		regs = new RegExp('^(.*[\\W_]|)(' + this._singular.cacheIrregular + ')$', 'i').exec(word);
 		if (regs !== null) {
-			this._singularized[word] = regs[1] + word.substring(0, 1) + this._singular.merged.irregular[regs[2].toLowerCase()].substring(1);
+			this._singularized[word] = regs[1] + this._singular.merged.irregular[regs[2].toLowerCase()];
 			return this._singularized[word];
 		}
 
@@ -558,7 +558,7 @@ $extend(exports, {Inflector: new Class({
 	 */
 	slug: function(string, replacement, map) {
 
-		replacement = $pick(replacement, '_');
+		replacement = $pick(replacement, '-');
 
 		if ($type(replacement) == 'array') {
 			map = replacement;

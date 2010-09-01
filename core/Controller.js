@@ -5,38 +5,48 @@ var Controller = new Class({
 	$type: 'Controller',
 	$name: null,
 
-	$layout: 'default',
+	$layout: null,
 	$action: null,
 
-	autoRender: true,
+	$autoRender: true,
 
-	variables: {},
+	$variables: null,
+
+	parameters: null,
 
 	initialize: function(options) {
+		this.$setup(options);
+	},
+
+	$setup: function(options) {
 		this.parameters = options.parameters || new Hash();
+		this.$autoRender = Array.pick([options.autoRender, this.$autoRender]);
+		this.$variables = new Hash();
+		this.$layout = null;
 	},
 
 	handle: function(action, args) {
 		if (this[action] && $type(this[action]) == 'function') {
-
-			var View = (app.getClass('View', 'CoreObject'));
-			
-			// Set up some variables
-			view = new View(this);
 			this.$action = action;
 
 			var returned = this[action].apply(this, $splat(args));
 
-			if (this.autoRender) {
-				view.set(this.variables);
+			if (this.$autoRender) {
+
+				// Set the view up
+				var View = (app.getClass('View', 'CoreObject'));
+				view = new View(this);
+				view.set(this.$variables);
+
+				// Render the view
 				var rendered = view.render(this.$action, this.$layout);
 				return rendered;
 			} else {
 				return returned;
 			}
 		} else {
-			this.throw_error('actionNotFound', {
-				description: 'The action ' + action + ' is not defined in controller ' + this.$name,
+			this.throw_error('The action ' + action + ' is not defined in controller ' + this.$name, {
+				type: 'action_not_found',
 				action: action,
 				controller: this.$name
 			});
@@ -46,7 +56,7 @@ var Controller = new Class({
 	set: function(name, value) {
 
 		if (typeof name == 'string') {
-			this.variables[name] = value;
+			this.$variables[name] = value;
 		} else {
 			$H(name).each(function(value, name) {
 				this.set(name, value);

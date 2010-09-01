@@ -1,21 +1,24 @@
-Error.implement({
-	options: {
-		description: null,
-	},
-
-	setOptions: function(options) {
-		this.options = options || {};
+var CoffeeError = new Class({
+	initialize: function(message, data) {
+		this.message = message;
+		$extend(this, data);
 	},
 
 	toString: function() {
-		return this.options.description || this.message;
+		return 'Error: ' + this.message;
 	}
 });
 var CoreObject = new Class({
+	CoreObject: true,
+
 	throw_error: function(error, data) {
-		err = new Error(error);
-		err.setOptions(data);
+		err = new CoffeeError(error, data);
+		Error.captureStackTrace(err, this.throw_error);
 		throw err;
+	},
+
+	toString: function() {
+		return this.$name;
 	}
 });
 

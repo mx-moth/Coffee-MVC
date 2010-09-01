@@ -9,7 +9,7 @@ var App = new Class({
 	/**
 	 * Creates a new App, loading settings and setting paths
 	 */
-	initialize: function() {
+	initialize: function(paths) {
 
 		this.paths = {};
 		this.classes = {};
@@ -29,6 +29,7 @@ var App = new Class({
 			});
 		});
 		this.paths = pathsMerged;
+		this.corePaths = paths;
 	},
 
 	/**
@@ -111,25 +112,35 @@ var App = new Class({
 		var file = this.findFile(name, type);
 		var c = null;
 		if (file) {
-			c = require(file)[name];
+			try {
+				c = require(file)[name];
+			} catch (err) {
+				this.throw_error(err.message, {
+					type: err.type,
+					arguments: err.arguments,
+					file: file,
+					name: name
+				});
+			}
 
 			if (c) {
 				c.implement('$name', name);
 				c['$name'] = name;
+				c['Class'] = name;
 				this.addClass(name, type, c);
 			} else {
-				this.throw_error("classNotFound", {
-					description: type + ' ' + name + ' in file ' + file + ' did not export ' + name,
-					name: name,
-					type: type,
+				this.throw_error(type + ' ' + name + ' in file ' + file + ' did not export ' + name, {
+					type: "classNotFound",
+					className: name,
+					classType: type,
 					file: file
 				});
 			}
 		} else {
-			this.throw_error("classNotFound", {
-				description: 'Could not find ' + type + ' ' + name,
-				name: name,
-				type: type
+			this.throw_error('Could not find ' + type + ' ' + name, {
+				type: "classNotFound",
+				className: name,
+				classType: type
 			});
 		}
 	},
@@ -142,22 +153,32 @@ var App = new Class({
 	 * Paramaters:
 	 * 	name - The name of the class.
 	 * 	type - The type of the class. Eg. Controller, Model, Behaviour...
+	 * 	newInstance - Force a new instancee to be created.
 	 *
 	 * Returns:
 	 *  An instance of the class asked for
 	 *
 	 * Throws: classNotFound
 	 */
-	 getInstance: function(name, type) {
+	getInstance: function(name, type, newInstance) {
 		if (!this.instances[type]) {
 			this.instances[type] = {};
 		}
-		if (!this.instances[type][name]) {
+		if (!this.instances[type][name] || newInstance) {
 			this.instances[type][name] = new (this.getClass(name, type))();
 		}
 
 		return this.instances[type][name];
-	 },
+	},
+
+	throw_error: function() {
+		var core = new (this.getClass('CoreObject', 'CoreObject'))();
+		core.throw_error.apply(core, arguments);
+	},
+
+	toString: function() {
+		return 'App';
+	},
 });
 
 Class.Mutators.CoreObject = function() {

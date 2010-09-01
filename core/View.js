@@ -42,8 +42,8 @@ var View = new Class({
 			}
 			return content;
 		} else {
-			this.throw_error('viewNotFound', {
-				description: 'View ' + name + this.extension + ' could not be found',
+			this.throw_error('View ' + name + this.extension + ' could not be found', {
+				type: 'view_not_found',
 				controller: this.controller.getName(),
 				action: this.action
 			});
